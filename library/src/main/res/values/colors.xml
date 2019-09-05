@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="def_bg_cursor">#00574B</color>
+    <color name="def_bg_selected">#00BFFF</color>
+    <color name="colorAccent">#D81B60</color>
+</resources>
