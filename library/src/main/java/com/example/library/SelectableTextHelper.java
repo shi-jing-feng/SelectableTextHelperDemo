@@ -87,6 +87,8 @@ public class SelectableTextHelper {
     private final int mSelectedColor;
     /** 开始和结束游标信息 和 选择文本信息 */
     private final SelectionInfo mSelectionInfo;
+    /** 开始和结束游标信息 和 选择文本信息 清除后的缓存 */
+    private final SelectionInfo mSelectionInfoCache;
 
     /** 是否正在滑动 */
     private boolean mIsScrolling;
@@ -138,6 +140,7 @@ public class SelectableTextHelper {
         this.mCursorHandleSize = TextLayoutUtil.dp2px(mContext, builder.mCursorHandleSizeInDp);
         this.mSelectedColor = builder.mSelectedColor;
         this.mSelectionInfo = new SelectionInfo();
+        this.mSelectionInfoCache = new SelectionInfo();
         init();
     }
 
@@ -215,6 +218,8 @@ public class SelectableTextHelper {
                     final float x = mTextViewDownPointF.x - mTextView.getPaddingLeft();
                     final float y = mTextViewDownPointF.y - mTextView.getPaddingTop();
 
+                    mIsScrolling = false;
+
                     showSelectView(x, y);
                 }
                 return true;
@@ -249,6 +254,9 @@ public class SelectableTextHelper {
                         mScrollY = mTextView.getScrollY();
                     }
                 }
+
+                Log.e("测试", "scroll mIsScrolling: " + mIsScrolling);
+
                 if (!mIsScrolling) {
                     mIsScrolling = true;
                     hideSelectView();
@@ -303,8 +311,6 @@ public class SelectableTextHelper {
         final int endLine = mSelectionInfo.endCursor.line;
         final int endLineEndOffset = layout.getLineEnd(endLine);
 
-//        mStatus = SHOWED;
-
         mSelectionInfo.startCursor.coord.x = layout.getPrimaryHorizontal(startOffset - 1);
         mSelectionInfo.startCursor.coord.y = layout.getLineBottom(startLine);
 
@@ -317,8 +323,8 @@ public class SelectableTextHelper {
         }
         mSelectionInfo.endCursor.coord.y = layout.getLineBottom(endLine);
 
-        final int textWidth = mTextView.getWidth() - mTextView.getPaddingLeft() - mTextView.getPaddingRight();
-        final int textHeight = mTextView.getHeight() - mTextView.getPaddingTop() - mTextView.getPaddingBottom();
+        final int parentWidth = ((ViewGroup) mTextView.getParent()).getWidth() - mTextView.getPaddingLeft() - mTextView.getPaddingRight();
+        final int parentHeight = ((ViewGroup) mTextView.getParent()).getHeight() - mTextView.getPaddingTop() - mTextView.getPaddingBottom();
         final int startX = (int) mSelectionInfo.startCursor.coord.x - mScrollX;
         final int startY = (int) mSelectionInfo.startCursor.coord.y - mScrollY;
         final int endX = (int) mSelectionInfo.endCursor.coord.x - mScrollX;
@@ -330,31 +336,23 @@ public class SelectableTextHelper {
         //判断是否超界
         if (startX < 0) {
             showStartCursor = false;
-//            mSelectionInfo.startCursor.coord.x = 0;
-        } else if (startX > textWidth) {
+        } else if (startX > parentWidth) {
             showStartCursor = false;
-//            mSelectionInfo.startCursor.coord.x = textWidth;
         }
         if (startY < 0) {
             showStartCursor = false;
-//            mSelectionInfo.startCursor.coord.y = 0;
-        } else if (startY > textHeight) {
+        } else if (startY > parentHeight) {
             showStartCursor = false;
-//            mSelectionInfo.startCursor.coord.y = textHeight;
         }
         if (endX < 0) {
             showEndCursor = false;
-//            mSelectionInfo.endCursor.coord.x = 0;
-        } else if (endX > textWidth) {
+        } else if (endX > parentWidth) {
             showEndCursor = false;
-//            mSelectionInfo.endCursor.coord.x = textWidth;
         }
         if (endY < 0) {
             showEndCursor = false;
-//            mSelectionInfo.endCursor.coord.y = 0;
-        } else if (endY > textHeight) {
+        } else if (endY > parentHeight) {
             showEndCursor = false;
-//            mSelectionInfo.endCursor.coord.y = textHeight;
         }
 
         if (showStartCursor && showEndCursor) {
@@ -415,7 +413,10 @@ public class SelectableTextHelper {
      * 用于滑动时隐藏游标和操作框
      */
     private void hideSelectView() {
-        mStatus = ALL_HIDED;
+
+        if (mStatus != ALL_CLOSED) {
+            mStatus = ALL_HIDED;
+        }
 
         if (mOperatePopupWindow != null) {
             mOperatePopupWindow.dismiss();
@@ -432,6 +433,8 @@ public class SelectableTextHelper {
      * 关闭 游标和操作框
      */
     private void closeSelectView() {
+
+        mIsScrolling = false;
         mStatus = ALL_CLOSED;
 
         if (mOperatePopupWindow != null) {
@@ -443,6 +446,7 @@ public class SelectableTextHelper {
         if (mEndCursorHandle != null) {
             mEndCursorHandle.dismiss();
         }
+        mSelectionInfoCache = mSelectionInfo.clone();
         mSelectionInfo.clear();
     }
 
@@ -451,13 +455,9 @@ public class SelectableTextHelper {
      * @param cursorHandle 游标
      */
     private void showCursorHandle(@NonNull final CursorHandle cursorHandle) {
-        final int textWidth = mTextView.getWidth() - mTextView.getPaddingLeft() - mTextView.getPaddingRight();
-        final int textHeight = mTextView.getHeight() - mTextView.getPaddingTop() - mTextView.getPaddingBottom();
-        final Layout layout = mTextView.getLayout();
         final Cursor cursor;
         int x = 0;
         int y = 0;
-        boolean hide = false;
 
         switch (cursorHandle.mCursorType) {
             case START:
@@ -465,31 +465,6 @@ public class SelectableTextHelper {
 
                 x = (int) cursor.coord.x + getExtraX() - mScrollX;
                 y = (int) cursor.coord.y + getExtraY() - mScrollY;
-
-//                //判断 开始游标 X轴 是否超界, 如越界则隐藏
-//                if (mSelectionInfo.startCursor.coord.x < 0) {
-//                    hide = true;
-//                } else if (mSelectionInfo.startCursor.coord.x > textWidth) {
-//                    hide = true;
-//                }
-//                //判断 开始游标 Y轴 是否超界, 如越界则隐藏
-//                if (mSelectionInfo.startCursor.coord.y < 0) {
-//                    hide = true;
-//                } else if (mSelectionInfo.startCursor.coord.y > textHeight) {
-//                    hide = true;
-//                }
-//
-//                if (hide) {
-//                    //隐藏游标
-//                    cursorHandle.hide();
-//                    //设置游标隐藏状态
-//                    if (mStatus == ALL_SHOWED) {
-//                        mStatus = END_CURSOR_SHOWED;
-//                    } else if (mStatus == START_CURSOR_SHOWED) {
-//                        mStatus = ALL_HIDED;
-//                    }
-//                    return;
-//                }
 
                 if (mStatus == ALL_HIDED || mStatus == END_CURSOR_SHOWED) {
                     cursorHandle.hide();
@@ -515,31 +490,6 @@ public class SelectableTextHelper {
                     cursorHandle.hide();
                     return;
                 }
-
-//                //判断 结束游标 X轴 是否超界, 如越界则隐藏
-//                if (mSelectionInfo.endCursor.coord.x < 0) {
-//                    hide = true;
-//                } else if (mSelectionInfo.endCursor.coord.x > textWidth) {
-//                    hide = true;
-//                }
-//                //判断 结束游标 Y轴 是否超界, 如越界则隐藏
-//                if (mSelectionInfo.endCursor.coord.y < 0) {
-//                    hide = true;
-//                } else if (mSelectionInfo.endCursor.coord.y > textHeight) {
-//                    hide = true;
-//                }
-//
-//                if (hide) {
-//                    //隐藏游标
-//                    cursorHandle.hide();
-//                    //设置游标隐藏状态
-//                    if (mStatus == ALL_SHOWED) {
-//                        mStatus = START_CURSOR_SHOWED;
-//                    } else if (mStatus == END_CURSOR_SHOWED) {
-//                        mStatus = ALL_HIDED;
-//                    }
-//                    return;
-//                }
 
                 if ((screenWidth - x) <= 2 * (mCursorHandleSize + 2 * mCursorPadding)) {
                     cursorHandle.mHorizontalAdjust = true;
@@ -592,7 +542,7 @@ public class SelectableTextHelper {
      * 获得 X轴 TextView相对坐标 转 绝对坐标 增量
      * @return X轴 增量
      */
-    public int getExtraX() {
+    private int getExtraX() {
         return mTextViewCoord[0] + mTextView.getPaddingLeft();
     }
 
@@ -600,7 +550,7 @@ public class SelectableTextHelper {
      * 获得 Y轴 TextView相对坐标 转 绝对坐标 增量
      * @return Y轴 增量
      */
-    public int getExtraY() {
+    private int getExtraY() {
         return mTextViewCoord[1] + mTextView.getPaddingTop();
     }
 
@@ -647,6 +597,36 @@ public class SelectableTextHelper {
 
             mSelectionInfo.endCursor.coord.y = layout.getLineBottom(line);
         }
+    }
+
+    /**
+     * 获取选择的字符
+     * @return 选择的字符
+     */
+    public CharSequence getSelectedCharSequence() {
+        int startIndex = mSelectionInfo.startCursor.offset - 1;
+        int endIndex = mSelectionInfo.endCursor.offset - 1;
+
+        if (startIndex < 0) {
+            startIndex = 0;
+        }
+        if (endIndex < 0) {
+            endIndex = 0;
+        }
+
+        if (mBackgroundColorSpan != null) {
+            mSpannable.removeSpan(mBackgroundColorSpan);
+        }
+
+        return mSpannable.subSequence(startIndex, endIndex + 1);
+    }
+
+    /**
+     * 关闭游标和操作框
+     */
+    public void close() {
+        mOperatePopupWindow.dismiss();
+        closeSelectView();
     }
 
     /**
@@ -972,6 +952,7 @@ public class SelectableTextHelper {
                 mPopupWindow.dismiss();
             }
             mSpannable.removeSpan(mBackgroundColorSpan);
+            mBackgroundColorSpan = null;
         }
 
         @Override
@@ -1028,14 +1009,6 @@ public class SelectableTextHelper {
                     final float dx = rawX - mCurrentPointF.x;
                     final float dy = rawY - mCurrentPointF.y;
 
-                    //此处需判断滑动是否超出TextView范围，超出范围则为无效滑动
-//                    if (currentMoveRawX > mTextViewCoord[0] + mTextViewWidth - mTextView.getPaddingRight()
-//                            || currentMoveRawX < mTextViewCoord[0] + mTextView.getPaddingLeft()
-//                            || currentMoveRawY > mTextViewCoord[1] + mTextViewHeight - mTextView.getPaddingBottom()
-//                            || currentMoveRawY < mTextViewCoord[1] + mTextView.getPaddingTop()) {
-//                        Log.e("测试", "break");
-//                        break;
-//                    }
                     update(dx, dy);
                     break;
                 case ACTION_UP:
@@ -1077,33 +1050,24 @@ public class SelectableTextHelper {
 
         public void show() {
             final Layout layout = mTextView.getLayout();
-            final int scrollX;
-            final int scrollY;
-            int x = 0;
-            int y = 0;
+            int x;
+            int y;
 
-            if (mTextView.getParent() != null) {
-                //有父容器
-                scrollX = ((ViewGroup) mTextView.getParent()).getScrollX();
-                scrollY = ((ViewGroup) mTextView.getParent()).getScrollY();
-            } else {
-                //没有父容器
-                scrollX = mTextView.getScrollX();
-                scrollY = mTextView.getScrollY();
+            x = (int) (layout.getPrimaryHorizontal(mSelectionInfo.startCursor.offset - 1) + mTextViewCoord[0] - mScrollX);
+            y = (int) (layout.getLineTop(mSelectionInfo.startCursor.line) + mTextViewCoord[1] - mWindowViewHeight - 2 * ELEVATION_WIDTH - mScrollY);
+
+            if (x < 0) {
+                x = 0;
+            }
+            if (y < 0) {
+                y = 0;
             }
 
-            if (x < getExtraX()
-                    || x > getExtraX() + mTextView.getWidth()
-                    || y < getExtraY()
-                    || y > getExtraY() + mTextView.getHeight()) {
-//                mPopupWindow.dismiss();
-//                return;
+            if (mStatus == END_CURSOR_SHOWED || mStatus == ALL_HIDED || mStatus == ALL_CLOSED) {
+                return;
             }
 
-            x = (int) (layout.getPrimaryHorizontal(mSelectionInfo.startCursor.offset - 1) + mTextViewCoord[0]);
-            y = (int) (layout.getLineTop(mSelectionInfo.startCursor.line) + mTextViewCoord[1] - mWindowViewHeight - 2 * ELEVATION_WIDTH);
-
-            mPopupWindow.showAtLocation(mTextView, Gravity.NO_GRAVITY, x - scrollX, y - scrollY);
+            mPopupWindow.showAtLocation(mTextView, Gravity.NO_GRAVITY, x, y);
         }
 
         public void dismiss() {

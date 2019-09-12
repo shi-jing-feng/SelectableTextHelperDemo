@@ -6,7 +6,7 @@ import android.graphics.PointF;
  * function: 游标信息
  * date: 2019/8/6
  */
-public class Cursor {
+public class Cursor implements Cloneable {
 
     /** 全局字符索引 */
     public int offset = 0;
@@ -24,4 +24,18 @@ public class Cursor {
         coord.y = 0F;
     }
 
+    @Override
+    protected Object clone() {
+        try {
+            final Cursor newCursor = (Cursor) super.clone();
+
+            newCursor.coord.x = coord.x;
+            newCursor.coord.y = coord.y;
+
+            return newCursor;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return new Cursor();
+    }
 }

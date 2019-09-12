@@ -9,6 +9,7 @@
     tools:layout_gravity="center">
 
     <TextView
+        android:id="@+id/tv_copy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"
@@ -17,6 +18,7 @@
         android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/tv_select_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="全选"

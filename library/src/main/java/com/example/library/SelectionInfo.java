@@ -20,4 +20,16 @@ public class SelectionInfo {
         endCursor.clear();
         content = "";
     }
+
+    public SelectionInfo clone() {
+        final SelectionInfo newSelectionInfo = new SelectionInfo();
+
+        newSelectionInfo.startCursor = startCursor.clone();
+        newSelectionInfo.endCursor = endCursor.clone();
+        newSelectionInfo.content = content;
+
+        return null;
+    }
+
+
 }
