@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".MainActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="烧火棍打扫U+1F601安华高是个大嫂苹果回到韩国哦哈瘦高个安华高搞好感到噶哦啊给噶噶给啊昂贵的sdghasldghal;sghdaslhlsagdha;sdgaskgashglhsgoashgdao;ghdaiodihgoaihdgsolhgao;dsniahwiosdghowihgowihegoiheowhowhegowhgoheowghwoihgowhgvoiwheohi嘎流干活啦格拉斯给阿萨拉萨河噶两个啦噶格拉爱哭的嘎哈哈sggkhgkkshgkhsgkahgkahgakhgakhgakhgakhgkahgkahgoahogahohgaoh涨啊杀思考过哈克按国家大力拉和嘎拉和嘎拉黑了哈啊给傻空拉和嘎厉害格萨拉gals规划哈喽干活啦嘎流干活啦格拉斯给阿萨拉萨河噶两个啦噶格拉爱哭的嘎哈哈sggkhgkkshgkhsgkahgkahgakhgakhgakhgakhgkahgkahgoahogahohgao涨啊杀思考过哈克按国家大力拉和嘎拉和嘎拉黑了哈啊给傻空拉和嘎厉害格萨拉gals规划哈喽干活啦嘎流干活啦格拉斯给阿萨拉萨河噶两个啦噶格拉爱哭的嘎哈哈sggkhgkkshgkhsgkahgkahgakhgakhgakhgakhgkahgkahgoahogahohgao涨啊杀思考过哈克按国家大力拉和嘎拉和嘎拉黑了哈啊给傻空拉和嘎厉害格萨拉gals规划哈喽干活啦嘎流干活啦格拉斯给阿萨拉萨河噶两个啦噶格拉爱哭的嘎哈哈sggkhgkkshgkhsgkahgkahgakhgakhgakhgakhgkahgkahgoahogahohgao涨啊杀思考过哈克按国家大力拉和嘎拉和嘎拉黑了哈啊给傻空拉和嘎厉害格萨拉gals规划哈喽干活啦嘎流干活啦格拉斯给阿萨拉萨河噶两个啦噶格拉爱哭的嘎哈哈sggkhgkkshgkhsgkahgkahgakhgakhgakhgakhgkahgkahgoahogahohga涨啊杀思考过哈克按国家大力拉和嘎拉和嘎拉黑了哈啊给傻空拉和嘎厉害格萨拉gals规划哈喽干活啦嘎流干活啦格拉斯给阿萨拉萨河噶两个啦噶格拉爱哭的嘎哈哈sggkhgkkshgkhsgkahgkahgakhgakhgakhgakhgkahgkahgoahogahohgaohgoshg撒工行给送达是撒干哈和是ohgoshg撒工行给送达是撒干哈和是hgoshg撒工行给送达是撒干哈和是hgoshg撒工行给送达是撒干哈和是hgoshg撒工行给送达是撒干哈和是goshg撒工行给送达是撒干哈和是国家大力拉和嘎拉和嘎拉黑了哈啊给傻空拉和嘎厉害格萨拉gals规划哈喽干活啦嘎流干活啦格拉斯给阿萨拉萨河噶两个啦噶格拉爱哭的嘎哈哈sggkhgkkshgkhsgkahgkahgakhgakhgakhgakhgkahgkahgoahogahohgaohgoshg撒工行给送达是撒干哈和是"
+            android:textColor="@android:color/black"/>
+
+    </ScrollView>
+
+</LinearLayout>
