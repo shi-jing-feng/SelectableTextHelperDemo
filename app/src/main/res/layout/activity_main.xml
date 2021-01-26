@@ -11,7 +11,8 @@
     <ScrollView
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:background="@android:color/darker_gray">
+        android:background="@android:color/darker_gray"
+        tools:ignore="UselessParent">
 
         <TextView
             android:id="@+id/tv_content"

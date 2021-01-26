@@ -8,8 +8,6 @@ import android.os.Build;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.Spanned;
-import android.text.method.MovementMethod;
-import android.text.method.ScrollingMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,15 +15,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.ViewTreeObserver;
-import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.example.library.util.ScreenUtil;
-
-import org.w3c.dom.Element;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,7 +34,6 @@ import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
-import static android.view.MotionEvent.obtain;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
@@ -88,7 +81,7 @@ public class SelectableTextHelper {
     /** 开始和结束游标信息 和 选择文本信息 */
     private final SelectionInfo mSelectionInfo;
     /** 开始和结束游标信息 和 选择文本信息 清除后的缓存 */
-    private final SelectionInfo mSelectionInfoCache;
+    private SelectionInfo mSelectionInfoCache;
 
     /** 是否正在滑动 */
     private boolean mIsScrolling;

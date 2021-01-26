@@ -25,7 +25,7 @@ public class Cursor implements Cloneable {
     }
 
     @Override
-    protected Object clone() {
+    protected Cursor clone() {
         try {
             final Cursor newCursor = (Cursor) super.clone();
 

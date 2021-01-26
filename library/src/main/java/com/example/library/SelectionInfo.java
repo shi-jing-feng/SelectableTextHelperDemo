@@ -1,7 +1,5 @@
 package com.example.library;
 
-import android.graphics.PointF;
-
 /**
  * function: 选择操作的状态信息
  * date: 2019/8/5
@@ -21,6 +19,7 @@ public class SelectionInfo {
         content = "";
     }
 
+    @Override
     public SelectionInfo clone() {
         final SelectionInfo newSelectionInfo = new SelectionInfo();
 
