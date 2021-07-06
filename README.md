@@ -1,2 +1,2 @@
 # SelectableTextHelper
-TextView文本自由选择操作开源库
+文本自由选择后可弹框进行操作的控件
